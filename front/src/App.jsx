@@ -7,23 +7,19 @@ import Setores from "./pages/setores/Setores";
 import Clientes from "./pages/clientes/Clientes";
 import Reservas from "./pages/reservas/Reservas";
 import Dashboard from "./pages/Dashboard";
+import AuthLayout from "./layouts/AuthLayout";
+import Login from "./pages/mobile/Login";
+import Validador from "./pages/mobile/Validador";
 
 
 function App() {
-
-  const usuario = {
-    "id_usuario":1,
-    "nome":"Luiz Fabiano",
-    "id_perfil":1,
-    "perfil":"Administrador"
-  }
-
-  window.sessionStorage.setItem('user',JSON.stringify(usuario))
 
   return (
     <>
       <BrowserRouter>
         <Routes>
+          <Route path="auth/*" element={<AuthLayout><Login /></AuthLayout>} />
+          <Route path="validador/*" element={<AuthLayout><Validador /></AuthLayout>} />
           <Route path="usuarios/*" element={<MainLayout><Usuarios/></MainLayout>} />
           <Route path="clientes/*" element={<MainLayout><Clientes/></MainLayout>} />
           <Route path="eventos/*" element={<MainLayout><Eventos/></MainLayout>} />

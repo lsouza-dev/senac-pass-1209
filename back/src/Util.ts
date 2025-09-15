@@ -33,6 +33,7 @@ export function verificarZod(result,reply:FastifyReply){
     return reply.status(400).send(mensagemPadrao(false,'Formulário preenchido incorretamente.',null,result.error.issues.map(err => err.message)))
 }
 export function verificarCorpoRequisicao(req,reply:FastifyReply){
+  console.log(req.body)
   if(req.body == null || req.body == undefined)
     return reply.status(400).send(mensagemPadrao(false,'Insira um corpo válido para fazer a requisição.'))
 }

@@ -26,7 +26,7 @@ const Input = ({
   placeholder='',
   maxLength = 255,
   type = "text",
-  validators,
+  validators={},
   register,
   disabled = false,
   errors,
@@ -34,6 +34,10 @@ const Input = ({
   chave='',
   valor='',
   mask = '',
+  style={},
+  onChange = (e:any) => {},
+  defaultValue=0,
+  defaultText='Selecione',
   ...props
 }) => {
 
@@ -49,6 +53,7 @@ const Input = ({
             placeholder={placeholder}
             disabled={disabled}
             maxLength={maxLength}
+            style={style && style}
             {...register(name, validators)}
             className="p-3 border border-cinza disabled:bg-cinza rounded-md text-xl"
             {...props}
@@ -74,14 +79,17 @@ const Input = ({
             {...register(name,{...validators,onChange:(e) => e.target.value = maskDocumento(mask,e.target.value)})}
             className="p-3 border border-cinza disabled:bg-cinza rounded-md text-xl"
             {...props}
-          />
-        )}
+            />
+          )}
         {type === "select" && (
           <select
-            {...register(name, validators)}
-            disabled={disabled}
-            className="p-3 border border-cinza disabled:bg-cinza rounded-md text-xl"
+          {...register(name, validators)}
+          disabled={disabled}
+          className="p-3 border border-cinza disabled:bg-cinza rounded-md text-xl"
+          onChange={({target}) => onChange(target.value)}
+          defaultValue={defaultValue}
           >
+            <option value={defaultValue} disabled>{defaultText}</option>
             {options && options.map(o => 
               <option  defaultValue={0} key={o[chave]} value={o[chave]}>
                   {`${o[chave]} - ${o[valor]}`}

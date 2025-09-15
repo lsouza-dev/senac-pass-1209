@@ -164,6 +164,16 @@ const ReservasCreateOrUpdate = () => {
   }
 
 
+  async function obterEventosDoSetor(evento) {
+        await axios.get(`http://localhost:3333/api/setores/evento/${evento}`)
+        .then(res => {
+            if(res.data.success){
+                toast.success(res.data.message)
+                setSetores(res.data.data)
+            }
+        })
+    }
+
   function baixarIngresso(){
     setPrinting(true)
   }
@@ -239,11 +249,14 @@ const ReservasCreateOrUpdate = () => {
                 disabled={
                   idReserva !== undefined || reservas.status === "Validado"
                 }
+                // onChange={({target:any}) => obterEventos(target.value)}
+                onChange={(e) => obterEventosDoSetor(e)}
                 chave="id_evento"
                 valor="nome"
                 options={eventos}
                 errors={errors}
                 label={"eventos"}
+                defaultText="Selecione o Evento"
                 register={register}
                 validators={{ required: true, maxLength: 255 }}
                 maxLength={255}
@@ -254,6 +267,7 @@ const ReservasCreateOrUpdate = () => {
                 name={"id_setor"}
                 type="select"
                 chave="id_setor"
+                defaultText="Selecione o setor"
                 disabled={reservas.status === "Validado"}
                 valor="nome"
                 options={setores}
@@ -268,6 +282,8 @@ const ReservasCreateOrUpdate = () => {
               <>
                 <div className=" col-1">
                   <DateTimeInput
+                    validators={{}}
+                    errors={{}}
                     name1={"dt_criacao"}
                     disabled={
                       idReserva !== undefined || reservas.status === "Validado"
@@ -280,6 +296,8 @@ const ReservasCreateOrUpdate = () => {
                 </div>
                 <div className=" col-2">
                   <DateTimeInput
+                    validators={{}}
+                    errors={{}}
                     name1={"dt_validacao"}
                     disabled={
                       idReserva !== undefined || reservas.status === "Validado"

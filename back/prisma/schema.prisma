@@ -12,8 +12,8 @@ model clientes {
   id_cliente Int        @id @default(autoincrement())
   nome       String     @db.VarChar(100)
   email      String     @unique(map: "email") @db.VarChar(255)
-  cpf        String     @db.VarChar(11)
-  telefone   String?    @db.VarChar(11)
+  cpf        String     @db.VarChar(20)
+  telefone   String?    @db.VarChar(20)
   ativo      Boolean    @default(true)
   reservas   reservas[]
 }
@@ -86,8 +86,8 @@ model setores {
 model usuarios {
   id_usuario Int        @id @default(autoincrement())
   nome       String     @db.VarChar(100)
-  cpf        String     @db.VarChar(11)
-  telefone   String     @db.VarChar(11)
+  cpf        String     @db.VarChar(20)
+  telefone   String     @db.VarChar(20)
   email      String     @unique(map: "email") @db.VarChar(255)
   senha      String     @db.VarChar(255)
   ativo      Boolean    @default(true)

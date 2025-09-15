@@ -7,6 +7,7 @@ import { clienteRoutes } from './routes/ClienteRoutes'
 import { reservaRoutes } from './routes/ReservaRoutes'
 import { perfilRoutes } from './routes/PerfilRoutes'
 import { dashboardRoutes } from './routes/DashboardRoutes'
+import { authRoutes } from './routes/AuthRoutes'
 
 
 (BigInt.prototype as any).toJSON = function(){
@@ -40,6 +41,9 @@ server.register(reservaRoutes,{
 })
 server.register(dashboardRoutes,{
   prefix:'/api/dashboard'
+})
+server.register(authRoutes,{
+  prefix:'/api/auth'
 })
 
 server.listen({port:3333}).then(() => console.log('Servidor em execução:\nhttp://localhost:3333/'))

@@ -59,6 +59,7 @@ const UsuariosCreateOrUpdate = () => {
         } else toast.warning("Nenhum perfil encontrado");
       })
       .catch((err) => {
+        console.log(err.message)
         toast.error(err.response.data.message);
       });
   }

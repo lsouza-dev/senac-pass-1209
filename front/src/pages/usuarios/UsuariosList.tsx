@@ -1,9 +1,10 @@
 import axios from "axios";
 import { PenBox, Plus, Trash } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import SweetAlert from "../../components/SweetAlert";
+import  {ValidarRota}  from "../../ValidarRota";
 
 const UsuariosList = () => {
   const [loading, setLoading] = useState(false);
@@ -11,6 +12,7 @@ const UsuariosList = () => {
   const [usuariosFilter,setUsuariosFilter]:any = useState([])
   const [modalVisible,setModalVisible] = useState(false)
   const [usuarioExclusao,setUsuarioExclusao]:any = useState({})
+  const navigate = useNavigate()
 
   function buscarUsuarios(data){
     console.log(data);
@@ -22,9 +24,15 @@ const UsuariosList = () => {
     console.log(usuariosFilter);
   }
 
+  
+
+  useEffect(() => {
+    ValidarRota(navigate,'/usuarios')
+  },[])
 
   async function obterUsuarios() {
     setModalVisible(true)
+    setLoading(true)
     await axios
     .get(`http://localhost:3333/api/usuarios`)
     .then((res) => {
@@ -39,6 +47,7 @@ const UsuariosList = () => {
     })
     .finally(() => {
       setModalVisible(false)
+      setLoading(false)
     });
   }
   
@@ -69,7 +78,7 @@ const UsuariosList = () => {
 
   return (
     <>
-    {modalVisible && <SweetAlert modalVisible={modalVisible}  isLoading={false} dados={usuarioExclusao} action={deletarUsuario} chave="id_usuario" valor="nome" title="Confirmar Exclusão" />}
+    {modalVisible && <SweetAlert modalVisible={modalVisible}  isLoading={true} isError={false} dados={null} action={() => {}} chave="id_usuario" valor="nome" />}
     <div className="grid gap-12">
       <h1 className="text-3xl font-bold">Usuarios</h1>
       <div className="flex items-center justify-end gap-4">
@@ -118,7 +127,7 @@ const UsuariosList = () => {
               {usuarios && usuarios.length > 0  ?  usuarios.map(u => {
                 return <tr key={u.id_usuario} className="border-b border-cinza *:py-4">
                     <td><p>{u.id_usuario}</p></td>
-                    <td><p>{u.nome}</p></td>
+                    <td  className="max-w-20 truncate"><p className="overflow-hidden text-ellipsis">{u.nome}</p></td>
                     <td><p>{u.cpf}</p></td>
                     <td><p>{u.email}</p></td>
                     <td className="text-center!"><p>{u.perfis.descricao}</p></td>

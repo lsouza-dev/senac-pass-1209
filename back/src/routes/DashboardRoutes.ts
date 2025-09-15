@@ -19,7 +19,7 @@ export async function dashboardRoutes(server:FastifyInstance) {
           CAST(SUM(CASE WHEN rsv.status = 'Validado' THEN 1 ELSE 0 END)as SIGNED) as validados
           FROM reservas rsv
           RIGHT JOIN eventos evt on (evt.id_evento =  rsv.id_evento)
-          where evt.id_evento = ${idEvento} and str.ativo = true;
+          where evt.id_evento = ${idEvento};
         `)
 
         console.log(cardsEvento);
@@ -34,8 +34,8 @@ export async function dashboardRoutes(server:FastifyInstance) {
           CAST((str.capacidade_atual) as SIGNED) as ocupados,
           CAST((str.capacidade_max - SUM(CASE WHEN rsv.status = 'Validado' THEN 1 ELSE 0 END)) as SIGNED) as desocupados
           from setores str
-          inner join eventos evt on (str.id_evento = evt.id_evento)
-          left join reservas rsv on (rsv.id_setor = str.id_setor)
+          INNER join eventos evt on (str.id_evento = evt.id_evento)
+          LEFT join reservas rsv on (rsv.id_setor = str.id_setor)
           where str.id_evento = ${idEvento} and str.ativo = true
           group by str.id_setor,str.nome;
         `)

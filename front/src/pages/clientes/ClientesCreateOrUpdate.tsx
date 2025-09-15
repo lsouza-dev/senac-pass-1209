@@ -5,9 +5,13 @@ import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router';
 import { toast } from 'react-toastify';
 import Input from '../../components/Input';
+import SweetAlert from '../../components/SweetAlert';
 
 const ClientesCreateOrUpdate = () => {
+  const [visible,setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error,setError] = useState(false)
+  const [campos,setCampos] = useState([])
   const [clientes, setClientes]: any = useState([]);
   const {register,reset,handleSubmit,formState:{errors},getValues} = useForm()
   const {idCliente } = useParams()
@@ -31,9 +35,14 @@ const ClientesCreateOrUpdate = () => {
   }
 
   async function criarCliente(data) {
-    // data['perfis']['id_perfil'] = Number(data['perfis']['id_perfil'])
-    // data['id_perfil'] = data['perfis']['id_perfil']
+    setVisible(true)
+    setLoading(true)
     data['id_perfil'] = Number(data['id_perfil'])
+    
+    data['cpf'] = data['cpf'].replace(/\D/g,'')
+    data['telefone'] = data['telefone'].replace(/\D/g,'')
+
+
     await axios
     .post(`http://localhost:3333/api/clientes`,data)
     .then((res) => {
@@ -43,8 +52,16 @@ const ClientesCreateOrUpdate = () => {
       }
     })
     .catch((err) => {
+      setLoading(false),
+      setError(true)
       console.log(err.response.data);
       toast.error(err.response.data.message);
+      if(err.response.data.campos){
+        setCampos(err.response.data.campos)
+      }
+    }).finally(() => {
+      setLoading(false),
+      setError(false)
     });
   }
   async function editarCliente(data) {
@@ -71,25 +88,27 @@ const ClientesCreateOrUpdate = () => {
   }, []);
 
   return (
+    <>
+    {visible && loading ? <SweetAlert modalVisible={visible} dados={null} isLoading /> :  <SweetAlert title='Preenchimento Inválido'  dados={null} isError campos={campos} isLoading={false} modalVisible={visible} /> }
     <div className="grid gap-12">
       <h1 className='text-4xl font-bold'>{idCliente ? 'Editar Cliente' : 'Criar Cliente'}</h1>
       <div className="w-full max-h-[50rem] overflow-auto">
         <form onSubmit={idCliente ? handleSubmit(editarCliente) : handleSubmit(criarCliente)}>
           <div className='grid grid-cols-2 gap-4'>
             {idCliente && <div className='col-1'>
-              <Input disabled={true} name={'id_cliente'} errors={errors} label={'ID Perfil'} placeholder={'Perfil do Cliente editado'} register={register} validators={{required:true}}/>
+              <Input disabled={true} name={'id_cliente'} errors={errors} label={'ID Perfil'} placeholder={'Perfil do Cliente editado'} register={register} />
             </div>}
             <div className='col-1'>
-              <Input name={'nome'} errors={errors} label={'nome'} placeholder={'Digite o nome do usuário'} register={register} validators={{required:true,maxLength:255}} maxLength={255}/>
+              <Input name={'nome'} errors={errors} label={'nome'} placeholder={'Digite o nome do usuário'} register={register}  maxLength={255}/>
             </div>
             {!idCliente && <div className='col-1'>
-              <Input name={'cpf'} errors={errors} type='text' mask='cpf' label={'cpf'} placeholder={'Digite apenas números'} register={register} validators={{required:true,maxLength:14}} maxLength={14}/>
+              <Input name={'cpf'} errors={errors} type='text' mask='cpf' label={'cpf'} placeholder={'Digite apenas números'} register={register}  maxLength={14}/>
             </div>}
             <div className='col-1'>
-              <Input name={'telefone'} errors={errors} type='text' mask='telefone' label={'telefone'} placeholder={'Digite o telefone do usuário'} register={register} validators={{required:true,maxLength:14}} maxLength={14}/>
+              <Input name={'telefone'} errors={errors} type='text' mask='telefone' label={'telefone'} placeholder={'Digite o telefone do usuário'} register={register}  maxLength={13}/>
             </div>
             <div className='col-1'>
-              <Input name={'email'} errors={errors} label={'email'} type='email' placeholder={'Digite o email do usuário'} register={register} validators={{required:true,maxLength:255}} maxLength={255}/>
+              <Input name={'email'} errors={errors} label={'email'} type='email' placeholder={'Digite o email do usuário'} register={register}  maxLength={255}/>
             </div>
           </div>
           <div className='text-end'>
@@ -98,6 +117,7 @@ const ClientesCreateOrUpdate = () => {
         </form>
       </div>
     </div>
+    </>
   );
 };
 
